@@ -13,17 +13,20 @@ int main(){
 
     while(enter_command){
             printf("Enter your command:\n");
-            printf("[OR /.help]\n");
+            printf("[OR ./help]\n");
             scanf(" %s", command);
 
-            check(command);
-
+            if(check(command)){
+                if (strcmp(command, "./help") == 0) {
+                    printf("");
+                } 
+                else if (strcmp(command, "exit") == 0) {
+                    enter_command = false;
+                }
+               
+            }
     }
 
-    
- 
-
-    
     return 0;
 }
 
@@ -39,15 +42,12 @@ int check(const char *command){
         strcmp(command, "clear") == 0 ||
         strcmp(command, "cd") == 0 ||
         strcmp(command, "history") == 0){
-
-            enter_command = false;
-    }else{
-
+            
+            return 1;
+    } else {
         printf("\n[ERROR- wrong-input-not-in-the-command-set]\n");
-        printf("try-again-OR-use-/.help\n");
+        printf("try-again-OR-use-./help\n\n");
 
-        enter_command = true;
-        }
-
-    return enter_command;
+        return 0;
+    }
 }
