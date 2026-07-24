@@ -3,6 +3,8 @@
 #include<stdbool.h>
 #include<unistd.h>
 #include<time.h>
+#include<dirent.h>
+
 
 char command[10];
 char explain[5];
@@ -13,6 +15,7 @@ void help();
 void defination();
 void run_pwd();
 void run_date();
+void run_ls();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -37,6 +40,10 @@ int main(){
                     enter_command = true;
                 }else if(strcmp(command, "date") == 0){
                     run_date();
+                    enter_command = true;
+                }else if(strcmp(command, "ls") == 0){
+                    run_ls();
+                    enter_command = true;
                 }
                
             }
@@ -110,4 +117,23 @@ void run_pwd(){
 void run_date(){
     time_t now = time(NULL);
     printf("%s\n", ctime(&now));
+}
+
+void run_ls(){
+    DIR *dir = opendir(".");
+    struct dirent *entry;
+
+    if (dir == NULL){
+        perror("ls error");
+        return;
+    }
+
+    while((entry = readdir(dir)) != NULL){
+        if (entry->d_name[0] != '.'){
+            printf("%s  ", entry->d_name);
+        }
+    }
+    printf("\n\n");
+
+    closedir(dir);
 }
