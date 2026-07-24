@@ -20,6 +20,7 @@ void run_date();
 void run_ls();
 void run_whoami();
 void run_mkdir();
+void run_echo();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -53,6 +54,9 @@ int main(){
                     enter_command = true;
                 }else if(strcmp(command, "mkdir") == 0){
                     run_mkdir();
+                    enter_command = true;
+                }else if(strcmp(command, "echo") == 0){
+                    run_echo();
                     enter_command = true;
                 }
                
@@ -162,5 +166,29 @@ void run_whoami(){
 }
 
 void run_mkdir(){
+    char dirname[100];
+    printf("Enter directory name: ");
+    scanf(" %s", dirname);
 
+#ifdef _WIN32
+    if(mkdir(dirname) == 0){
+#else
+    if(mkdir(dirname, 0777) == 0){
+#endif
+        printf("Directory '%s' created successfully.\n\n", dirname);
+    }else{
+        perror("mkdir error");
+    }
+}
+}
+
+void run_echo(){
+    char text[256];
+    printf("Enter text: ");
+
+    getchar();
+
+    if(fgets(text, sizeof(text), stdin) != NULL){
+        printf("%s\n", text);
+    }
 }
