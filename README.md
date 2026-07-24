@@ -157,11 +157,6 @@ main()
 
 ---
 
-## Author
-
-Built by Arjun as a systems + graphics programming project — combining a custom shell implementation with a Dear ImGui terminal renderer.
-
----
 
 ## License
 
