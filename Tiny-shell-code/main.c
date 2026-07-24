@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdbool.h>
+#include<unistd.h>
 
 char command[10];
 char explain[5];
@@ -9,6 +10,8 @@ bool enter_command = true;
 int check(const char *command);
 void help();
 void defination();
+void pwd();
+void date();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -28,8 +31,11 @@ int main(){
                         }
                     enter_command = true;
                 } 
-                else if (strcmp(command, "") == 0) {
-                
+                else if (strcmp(command, "pwd") == 0) {
+                    pwd();
+                    enter_command = true;
+                }else if(strcmp(command, "date") == 0){
+                    date();
                 }
                
             }
@@ -91,4 +97,15 @@ void defination(){
     printf("10. cd - Change Directory (navigate to a different directory)\n");
     printf("11. history - Display command history\n");
     printf("\n-----------------------------------------\n\n");
+}
+
+void pwd(){
+    char cwd[1024];
+                    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                        printf("%s\n\n", cwd);
+                    }
+}
+
+void date(){
+    
 }
