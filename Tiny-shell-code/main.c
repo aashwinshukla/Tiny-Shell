@@ -24,6 +24,9 @@ void run_whoami();
 void run_mkdir();
 void run_echo();
 void add_to_history(command);
+void run_clear();
+void run_cd();
+void run_history();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -34,39 +37,23 @@ int main(){
             printf("[OR ./help]\n");
             scanf(" %s", command);
 
-            if(check(command)){
-                if (strcmp(command, "./help") == 0) {
-                    help();
-                    scanf(" %s",explain);
-                        if(strcmp(explain, "./expl") == 0){
-                            defination();
-                        }
-                    enter_command = true;
-                } 
-                else if (strcmp(command, "pwd") == 0) {
-                    run_pwd();
-                    enter_command = true;
-                }else if(strcmp(command, "date") == 0){
-                    run_date();
-                    enter_command = true;
-                }else if(strcmp(command, "ls") == 0){
-                    run_ls();
-                    enter_command = true;
-                }else if(strcmp(command, "whoami") == 0){
-                    run_whoami();
-                    enter_command = true;
-                }else if(strcmp(command, "mkdir") == 0){
-                    run_mkdir();
-                    enter_command = true;
-                }else if(strcmp(command, "echo") == 0){
-                    run_echo();
-                    enter_command = true;
-                }else if(strcmp(command, "history") == 0){
-                    add_to_history();
-                    enter_command = true;
-                }
+            if (check(command)) {
+                add_to_history(command); // Log command to history
 
-               
+                if (strcmp(command, "./help") == 0) { defination(); }
+                else if (strcmp(command, "pwd") == 0)     { run_pwd(); }
+                else if (strcmp(command, "date") == 0)    { run_date(); }
+                else if (strcmp(command, "ls") == 0)      { run_ls(); }
+                else if (strcmp(command, "whoami") == 0)  { run_whoami(); }
+                else if (strcmp(command, "mkdir") == 0)   { run_mkdir(); }
+                else if (strcmp(command, "echo") == 0)    { run_echo(); }
+                else if (strcmp(command, "clear") == 0)   { run_clear(); }
+                else if (strcmp(command, "cd") == 0)      { run_cd(); }
+                else if (strcmp(command, "history") == 0) { run_history(); }
+                else if (strcmp(command, "exit") == 0) {
+                    run_exit();
+                    enter_command = false;
+                }
             }
     }
 
@@ -205,4 +192,39 @@ void add_to_history(const char *cmd) {
         strcpy(history_list[history_count], cmd);
         history_count++;
     }
+}
+
+void run_clear() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+
+void run_cd() {
+    char path[256];
+    printf("Enter directory path: ");
+    scanf(" %s", path);
+
+    if (chdir(path) != 0) {
+        perror("cd error");
+    } else {
+        printf("Changed directory to %s\n\n", path);
+    }
+}
+
+
+void run_history() {
+    printf("\n--- Command History ---\n");
+    for (int i = 0; i < history_count; i++) {
+        printf("%d: %s\n", i + 1, history_list[i]);
+    }
+    printf("\n");
+}
+
+
+void run_exit() {
+    printf("Exiting Tiny Shell... Goodbye!\n");
 }
