@@ -5,7 +5,7 @@
 char command[10];
 bool enter_command = true;
 
-int check();
+int check(const char *command);
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -27,26 +27,27 @@ int main(){
     return 0;
 }
 
-int check(command){
-    if(command == '/.help' ||
-    command == 'pwd'||
-    command == 'date' ||
-    command == 'ls' ||
-    command == 'whoami' ||
-    command == 'mkdir' ||
-    command == 'echo' ||
-    command == 'exit' ||
-    command == 'clear' ||
-    command == 'cd' ||
-    command == 'history'){
-        enter_command = false;
-        break;
+int check(const char *command){
+    if (strcmp(command, "./help") == 0 ||
+        strcmp(command, "pwd") == 0 ||
+        strcmp(command, "date") == 0 ||
+        strcmp(command, "ls") == 0 ||
+        strcmp(command, "whoami") == 0 ||
+        strcmp(command, "mkdir") == 0 ||
+        strcmp(command, "echo") == 0 ||
+        strcmp(command, "exit") == 0 ||
+        strcmp(command, "clear") == 0 ||
+        strcmp(command, "cd") == 0 ||
+        strcmp(command, "history") == 0){
 
+            enter_command = false;
     }else{
+
         printf("\n[ERROR- wrong-input-not-in-the-command-set]\n");
         printf("try-again-OR-use-/.help\n");
+
         enter_command = true;
-    }
+        }
 
     return enter_command;
 }
