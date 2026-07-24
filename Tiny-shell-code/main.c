@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdbool.h>
 #include<unistd.h>
+#include<time.h>
 
 char command[10];
 char explain[5];
@@ -10,8 +11,8 @@ bool enter_command = true;
 int check(const char *command);
 void help();
 void defination();
-void pwd();
-void date();
+void run_pwd();
+void run_date();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -32,10 +33,10 @@ int main(){
                     enter_command = true;
                 } 
                 else if (strcmp(command, "pwd") == 0) {
-                    pwd();
+                    run_pwd();
                     enter_command = true;
                 }else if(strcmp(command, "date") == 0){
-                    date();
+                    run_date();
                 }
                
             }
@@ -99,13 +100,14 @@ void defination(){
     printf("\n-----------------------------------------\n\n");
 }
 
-void pwd(){
+void run_pwd(){
     char cwd[1024];
                     if (getcwd(cwd, sizeof(cwd)) != NULL) {
                         printf("%s\n\n", cwd);
                     }
 }
 
-void date(){
-    
+void run_date(){
+    time_t now = time(NULL);
+    printf("%s\n", ctime(&now));
 }
