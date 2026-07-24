@@ -78,6 +78,17 @@ void help(){
 }
 
 void defination(){
-    printf("\n--------------Command Breif--------------\n");
-
+    printf("\n--------------Command Brief--------------\n");
+    printf("\n1. ./help - Display the list of available commands\n");
+    printf("2. pwd - Print Working Directory (shows current directory path)\n");
+    printf("3. ls - List files and directories in the current directory\n");
+    printf("4. date - Display the current date and time\n");
+    printf("5. whoami - Display the current user name\n");
+    printf("6. mkdir - Make Directory (create a new directory)\n");
+    printf("7. echo - Display a line of text or string\n");
+    printf("8. exit - Exit the shell program\n");
+    printf("9. clear - Clear the terminal screen\n");
+    printf("10. cd - Change Directory (navigate to a different directory)\n");
+    printf("11. history - Display command history\n");
+    printf("\n-----------------------------------------\n\n");
 }
