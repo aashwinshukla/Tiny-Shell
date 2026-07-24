@@ -8,7 +8,7 @@ bool enter_command = true;
 
 int check(const char *command);
 void help();
-void expl();
+void defination();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -24,7 +24,7 @@ int main(){
                     help();
                     scanf(" %s",explain);
                         if(strcmp(explain, "./expl") == 0){
-                            expl();
+                            defination();
                         }
                     enter_command = true;
                 } 
@@ -77,7 +77,7 @@ void help(){
 
 }
 
-void expl(){
+void defination(){
     printf("\n--------------Command Breif--------------\n");
 
 }
