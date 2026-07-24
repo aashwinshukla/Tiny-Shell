@@ -1,41 +1,29 @@
 # Tiny Shell
 
-A minimal command-line shell written in C from scratch, with a custom **OpenGL/GLFW terminal UI**.
+A minimal command-line shell written in C, with a custom **Dear ImGui** graphical terminal UI.
 
-Instead of running inside your system terminal, Tiny Shell opens its own graphical window — a dark, styled terminal rendered with OpenGL 2D primitives and a bitmap font. All input, output, scrolling, and the blinking cursor are handled entirely in OpenGL.
+Instead of running inside your system's terminal, Tiny Shell opens its own dark window — built with Dear ImGui and a DirectX 9 backend. No extra library installation needed; ImGui source files are bundled directly in the repo.
 
 ---
 
 ## Screenshot
 
-```
-╔══════════════════════════════════════════════════╗
-║              Tiny Shell  v1.0                    ║  ← gradient header
-╠══════════════════════════════════════════════════╣
-║  ========================================        ║
-║         Welcome to Tiny Shell                    ║  ← colour-coded output
-║  ========================================        ║
-║  Type  ./help   to see all commands.             ║
-║                                                  ║
-║  tiny-shell> ls                                  ║
-║  Makefile  README.md  include  src               ║
-║                                                  ║
-╠══════════════════════════════════════════════════╣
-║  tiny-shell> _                                   ║  ← input bar + cursor
-╚══════════════════════════════════════════════════╝
-```
+![Tiny Shell running](assets/screenshot.png)
 
 ---
 
 ## Features
 
-- OpenGL window — no system terminal required
-- Gradient header bar with title
-- Scrollable output pane (Up / Down / Page Up / Page Down)
-- Colour-coded text (green prompt, cyan info, red errors, yellow success)
-- Blinking block cursor
+- Dear ImGui window — no system terminal required
+- Styled dark theme with a teal header bar
+- Scrollable output pane with colour-coded text
+  - Green — prompt echo
+  - Cyan  — info / help text
+  - Red   — errors
+  - Yellow — success messages
+- Auto-scroll to latest output
 - In-session command history
-- Cross-platform: Windows (MinGW), Linux, macOS
+- Windows-native (Win32 + DirectX 9 — both built into Windows)
 
 ---
 
@@ -66,19 +54,27 @@ Tiny-Shell/
 ├── include/                  # Header files
 │   ├── globals.h             # extern declarations for all global variables
 │   ├── commands.h            # Function prototypes for commands + utilities
-│   └── ui.h                  # OpenGL UI API declarations
+│   └── ui.h                  # ImGui UI API (ui_init, ui_run, ui_shutdown)
 │
 ├── src/                      # Source files
-│   ├── main.c                # Entry point — init UI, run loop, shutdown
+│   ├── main.c                # Entry point — 3 lines: init, run, shutdown
 │   ├── globals.c             # Global variable definitions
-│   ├── commands.c            # Shell command implementations
+│   ├── commands.c            # Shell command implementations (printf layer)
 │   ├── utils.c               # check(), help(), defination(), history
-│   └── ui.c                  # Full OpenGL/GLFW terminal UI
+│   └── ui.cpp                # Dear ImGui Win32+DX9 terminal UI
 │
-├── Tiny-shell-code/          # Original single-file prototype (reference only)
+├── third_party/imgui/        # Dear ImGui source (bundled, no install needed)
+│   ├── imgui.h / imgui.cpp
+│   ├── imgui_impl_win32.*
+│   ├── imgui_impl_dx9.*
+│   └── ... (other imgui files)
+│
+├── assets/                   # Project assets
+│   └── screenshot.png        # Screenshot of the running shell
+│
 │   └── main.c                # ← do NOT compile this
 │
-├── Makefile                  # Cross-platform build system
+├── CMakeLists.txt            # Build system
 ├── LICENSE
 └── README.md
 ```
@@ -87,47 +83,46 @@ Tiny-Shell/
 
 ## Dependencies
 
-| Library   | Purpose                          |
-|-----------|----------------------------------|
-| GLFW 3    | Window creation + input events   |
-| OpenGL    | 2D rendering                     |
-| freeglut  | Bitmap font rendering            |
+| What               | How you get it                          |
+|--------------------|-----------------------------------------|
+| GCC (MinGW)        | Already on your machine via MSYS2       |
+| CMake              | Already installed (v3.29)               |
+| Dear ImGui         | Bundled in `third_party/imgui/` ✓       |
+| DirectX 9          | Built into every Windows install ✓      |
+| Win32 API          | Built into every Windows install ✓      |
 
-### Install dependencies
-
-**Windows — MinGW/MSYS2**
-```bash
-pacman -S mingw-w64-x86_64-glfw mingw-w64-x86_64-freeglut
-```
-
-**Ubuntu / Debian**
-```bash
-sudo apt install libglfw3-dev freeglut3-dev libgl-dev
-```
-
-**macOS (Homebrew)**
-```bash
-brew install glfw freeglut
-```
+**Nothing to install.** Just build and run.
 
 ---
 
 ## Build & Run
 
-```bash
-# Linux / macOS
-make
-./tiny-shell
+Open PowerShell (or any terminal with `cmake` and `gcc` in PATH):
 
-# Windows (MinGW/MSYS2)
-mingw32-make
-./tiny-shell.exe
+```powershell
+# 1. Configure (only needed once)
+cmake -S . -B build -G "MinGW Makefiles"
 
-# Manual (no make)
-gcc -Wall -std=c11 -Iinclude \
-    src/main.c src/globals.c src/commands.c src/utils.c src/ui.c \
-    -lglfw3 -lfreeglut -lopengl32 -lgdi32 -lwinmm \
-    -o tiny-shell
+# 2. Build
+cmake --build build
+
+# 3. Run
+.\build\tiny-shell.exe
+```
+
+### Rebuild after changes
+
+```powershell
+cmake --build build
+.\build\tiny-shell.exe
+```
+
+### Clean build from scratch
+
+```powershell
+Remove-Item -Recurse -Force build
+cmake -S . -B build -G "MinGW Makefiles"
+cmake --build build
 ```
 
 ---
@@ -136,26 +131,35 @@ gcc -Wall -std=c11 -Iinclude \
 
 ```
 main()
-  └── ui_init()          Creates GLFW window, prints welcome banner
-  └── ui_run()           Main loop:
-        ├── glfwPollEvents()
-        ├── char_callback()  → appends typed chars to input buffer
-        ├── key_callback()   → Enter submits, Backspace deletes, arrows scroll
-        │     └── on_enter()
-        │           ├── add_to_history()
-        │           └── dispatch()  → routes to ui_run_pwd / ls / etc.
-        └── render()
-              ├── draw_output()   scrollback buffer with colour tags
-              ├── draw_header()   gradient title bar
-              └── draw_footer()   input bar + blinking cursor
-  └── ui_shutdown()      Destroys window, frees GLFW
+  └── ui_init()
+        ├── Creates a Win32 window
+        ├── Initialises DirectX 9 device
+        ├── Initialises Dear ImGui (Win32 + DX9 backends)
+        └── Prints welcome banner into output buffer
+
+  └── ui_run()   ← loops every frame until exit
+        ├── PeekMessage()       handle Win32 events (resize, close…)
+        ├── ImGui::NewFrame()
+        ├── Draw header bar     (teal, title + hint)
+        ├── Draw output pane    (scrollable, colour-coded lines)
+        ├── Draw input bar      (InputText — always focused)
+        │     └── on Enter → on_enter()
+        │               ├── add_to_history()
+        │               └── dispatch()  → cmd_pwd / cmd_ls / etc.
+        ├── ImGui::Render()
+        └── d3d_device->Present()
+
+  └── ui_shutdown()
+        ├── ImGui cleanup
+        ├── DirectX 9 cleanup
+        └── Destroy Win32 window
 ```
 
 ---
 
 ## Author
 
-Built by Arjun as a systems + graphics programming project — combining a custom shell implementation with a hand-written OpenGL terminal renderer.
+Built by Arjun as a systems + graphics programming project — combining a custom shell implementation with a Dear ImGui terminal renderer.
 
 ---
 
