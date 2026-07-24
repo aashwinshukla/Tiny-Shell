@@ -3,9 +3,12 @@
 #include<stdbool.h>
 
 char command[10];
+char explain[5];
 bool enter_command = true;
 
 int check(const char *command);
+void help();
+void expl();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -18,10 +21,15 @@ int main(){
 
             if(check(command)){
                 if (strcmp(command, "./help") == 0) {
-                    printf("");
+                    help();
+                    scanf(" %s",explain);
+                        if(strcmp(explain, "./expl") == 0){
+                            expl();
+                        }
+                    enter_command = true;
                 } 
-                else if (strcmp(command, "exit") == 0) {
-                    enter_command = false;
+                else if (strcmp(command, "") == 0) {
+                
                 }
                
             }
@@ -50,4 +58,26 @@ int check(const char *command){
 
         return 0;
     }
+}
+
+void help(){
+    printf("\n--------------Command List--------------\n");
+    printf("1. ./help\n");
+    printf("2. pwd\n");
+    printf("3. ls\n");
+    printf("4. date\n");
+    printf("5. whoami\n");
+    printf("6. mkdir\n");
+    printf("7. echo\n");
+    printf("8. exit\n");
+    printf("9. clear\n");
+    printf("10. cd\n");
+    printf("11. history\n");
+    printf("\nto know more type ./expl [OR type anything]\n");
+
+}
+
+void expl(){
+    printf("\n--------------Command Breif--------------\n");
+
 }
