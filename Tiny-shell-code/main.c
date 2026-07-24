@@ -4,6 +4,8 @@
 #include<unistd.h>
 #include<time.h>
 #include<dirent.h>
+#include<stdlib.h>
+#include<sys/stat.h>
 
 
 char command[10];
@@ -16,6 +18,8 @@ void defination();
 void run_pwd();
 void run_date();
 void run_ls();
+void run_whoami();
+void run_mkdir();
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -43,6 +47,12 @@ int main(){
                     enter_command = true;
                 }else if(strcmp(command, "ls") == 0){
                     run_ls();
+                    enter_command = true;
+                }else if(strcmp(command, "whoami") == 0){
+                    run_whoami();
+                    enter_command = true;
+                }else if(strcmp(command, "mkdir") == 0){
+                    run_mkdir();
                     enter_command = true;
                 }
                
@@ -136,4 +146,21 @@ void run_ls(){
     printf("\n\n");
 
     closedir(dir);
+}
+
+void run_whoami(){
+    char *username = getenv("USER");
+    if(username == NULL){
+        username = getenv("USERNAME");
+    }
+
+    if (username != NULL) {
+        printf("%s\n\n", username);
+    } else {
+        printf("Unknown user\n\n");
+    }
+}
+
+void run_mkdir(){
+
 }
