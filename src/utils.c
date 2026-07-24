@@ -23,6 +23,7 @@
  */
 int check(const char *cmd) {
     if (strcmp(cmd, "./help")   == 0 ||
+        strcmp(cmd, "./expl")   == 0 ||  /* shows descriptions of each command */
         strcmp(cmd, "pwd")      == 0 ||
         strcmp(cmd, "date")     == 0 ||
         strcmp(cmd, "ls")       == 0 ||

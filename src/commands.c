@@ -4,6 +4,22 @@
  * Implements every shell command that Tiny Shell supports.
  * Each function maps 1-to-1 with a command the user can type.
  *
+ * NOTE — two versions of each command exist in this project:
+ *
+ *   commands.c  (this file)
+ *     Uses printf() — outputs to the plain system terminal.
+ *     This is the fallback / reference layer. If you ever want
+ *     to run Tiny Shell without the OpenGL window (e.g. just
+ *     compile src/main.c + this file for a quick test), this
+ *     is what gets used.
+ *
+ *   src/ui.c  (the ui_run_* static functions inside it)
+ *     Uses ui_print() — outputs into the OpenGL window.
+ *     This is what actually runs when you launch the full app.
+ *
+ * Both sets of functions do the exact same thing — the only
+ * difference is WHERE the output goes (terminal vs GL window).
+ *
  * Cross-platform notes:
  *   - mkdir()  has a different signature on Windows vs Unix
  *   - clear    uses "cls" on Windows, "clear" on Unix/Linux
