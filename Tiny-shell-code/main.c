@@ -11,6 +11,8 @@
 char command[10];
 char explain[5];
 bool enter_command = true;
+char history_list[100][20];
+int history_count = 0;
 
 int check(const char *command);
 void help();
@@ -21,6 +23,7 @@ void run_ls();
 void run_whoami();
 void run_mkdir();
 void run_echo();
+void add_to_history(command);
 
 int main(){
     printf("\n--------------Tiny Shell--------------\n");
@@ -58,7 +61,11 @@ int main(){
                 }else if(strcmp(command, "echo") == 0){
                     run_echo();
                     enter_command = true;
+                }else if(strcmp(command, "history") == 0){
+                    add_to_history();
+                    enter_command = true;
                 }
+
                
             }
     }
@@ -190,5 +197,12 @@ void run_echo(){
 
     if(fgets(text, sizeof(text), stdin) != NULL){
         printf("%s\n", text);
+    }
+}
+
+void add_to_history(const char *cmd) {
+    if (history_count < 100) {
+        strcpy(history_list[history_count], cmd);
+        history_count++;
     }
 }
